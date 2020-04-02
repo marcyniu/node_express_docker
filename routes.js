@@ -1,8 +1,6 @@
 const express = require('express');
 const routes = express.Router();
 
-console.log(express);
-
 //Example: http://{host}/
 routes.get('/', (req, res) => {
 	res.send('Main folder');
@@ -26,6 +24,5 @@ routes.get('/path2/:userName', (req, res, next) => {
 //Static files in public directory:
 //Example: http://{host}/images/cat.jpeg
 routes.use(express.static('public'));
-
 
 module.exports = routes;

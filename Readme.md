@@ -14,7 +14,7 @@ $ echo "172.18.0.40 node_server.test" >> /etc/hosts
 # Run container:
 $ docker run --rm  --tty --interactive \
 --name node_server \
---volume /home/developer/code/node/first:/usr/src/app \
+--volume /home/developer/code/node/node_express_docker:/usr/src/app \
 --net dev-net \
 --ip 172.18.0.40 \
 node/node-web-app:latest

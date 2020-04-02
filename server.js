@@ -3,8 +3,6 @@
 const express = require('express');
 const routes = require('./routes');
 
-console.log(express);
-
 // Constants
 const PORT = 80;
 const HOST = '0.0.0.0';
