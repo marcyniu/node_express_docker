@@ -8,8 +8,8 @@ $ docker network create --driver=bridge \
     --ip-range 172.18.0.0/16 \
     --subnet 172.18.0.0/16 dev-net
 
-# Add local domain to /etc/hosts file:
-$ echo "172.18.0.40 node_server.test" >> /etc/hosts
+# As sudo, add local domain to /etc/hosts file:
+$ sudo echo "172.18.0.40 node_server.test" >> /etc/hosts
 
 # Run container:
 $ docker run --rm  --tty --interactive \
