@@ -34,3 +34,4 @@ $ docker run --rm  --tty --interactive \
 --net dev-net \
 --ip 172.18.0.40 \
 node/node-web-app:latest
+
