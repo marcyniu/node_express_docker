@@ -27,9 +27,8 @@ COPY package*.json ./
 # Install only production dependencies
 RUN if [ -f package-lock.json ]; then npm ci --only=production --strict-ssl=false; else npm install --only=production --strict-ssl=false; fi
 
-# Copy application files from build stage (excluding node_modules)
-COPY --from=build /usr/src/app/server.js .
-COPY --from=build /usr/src/app/routes.js .
+# Copy application files from build stage (excluding node_modules which was installed separately above)
+COPY --from=build /usr/src/app/*.js ./
 COPY --from=build /usr/src/app/public ./public
 
 EXPOSE 80

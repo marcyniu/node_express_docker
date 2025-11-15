@@ -17,7 +17,10 @@ $ docker run --rm -p 80:80 node/node-web-app
 #
 # Then build and run:
 # $ docker build -f Dockerfile.dev -t node/node-web-app:dev .
-# $ docker run --rm -p 80:80 -v $(pwd):/usr/src/app node/node-web-app:dev
+# $ docker run --rm -p 80:80 node/node-web-app:dev
+#
+# Note: To use volume mounts for development, add node_modules to .dockerignore
+# and use: docker run --rm -p 80:80 -v $(pwd):/usr/src/app node/node-web-app:dev
 
 # Create network if not exists
 $ docker network create --driver=bridge \
