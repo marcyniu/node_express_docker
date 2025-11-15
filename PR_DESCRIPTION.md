@@ -1,59 +1,49 @@
-# Pull Request: Upgrade Node to 25 via Dockerfile
+# Upgrade Node to 25 via Dockerfile
 
 ## Summary
 
-This PR upgrades the Node.js version from 10 to 25 in the Dockerfile and implements best practices for production Docker images:
+This PR upgrades the Node.js version from 10 to 25 in the Dockerfile using node:25-bullseye-slim and implements production best practices:
 
-- **Updated Dockerfile to use Node 25** (node:25-bullseye-slim) for both build and runtime stages
-- **Implemented multi-stage build** to separate build dependencies from runtime dependencies
-- **Updated install steps** to use `npm ci` when package-lock.json is present, fallback to `npm install` otherwise
-- **Install only production dependencies in runtime image** using `npm install --only=production`
-- **Removed nodemon from runtime image** - it's now only in devDependencies for local development
-- **Updated runtime CMD** to use `node server.js` instead of nodemon
-- **Added dev script** in package.json for local development with nodemon (`npm run dev`)
-- **Updated Readme.md** with build & run instructions for both production and development setups
+- Update Dockerfile to use Node 25 (node:25-bullseye-slim)
+- Implement multi-stage build to separate build dependencies from runtime
+- Use npm ci when package-lock.json is present, fallback to npm install otherwise
+- Install only production dependencies in runtime image (npm install --only=production)
+- Remove nodemon from runtime image and ensure runtime uses `node server.js`
+- Move nodemon to devDependencies and add "dev" script for local development ("nodemon server.js")
+- Update Readme.md with build & run instructions for production and development
 
-## Changes Made
+## Compatibility and Verification Steps
 
-### Dockerfile
-- Upgraded base image from `node:10` to `node:25-bullseye-slim`
-- Implemented multi-stage build with separate build and runtime stages
-- Build stage installs all dependencies (including devDependencies)
-- Runtime stage installs only production dependencies
-- Application files are copied selectively from build stage (excluding node_modules)
-- Changed CMD from nodemon to `node server.js` for production
+- [x] Build the Docker image locally: `docker build -t node/node-web-app:pr-test .`
+- [x] Run the container and verify the app responds on port 80: `docker run --rm -p 80:80 node/node-web-app:pr-test`
+- [ ] Run `npm ci` locally to confirm no lockfile issues and ensure production deps install correctly
+- [x] Review package.json scripts to ensure proper start/dev scripts exist
+- [x] If native modules are present, verify multi-stage build or build dependencies are included to allow compilation
 
-### package.json
-- Moved `nodemon` from `dependencies` to `devDependencies`
-- Added `dev` script: `"dev": "nodemon server.js"` for local development
+## Files Modified
 
-### Readme.md
-- Updated build instructions
-- Added production run instructions: `docker run --rm -p 80:80 node/node-web-app`
-- Added development setup instructions with Dockerfile.dev approach for using nodemon
+- **Dockerfile**: Upgraded from node:10 to node:25-bullseye-slim with multi-stage build
+- **package.json**: Moved nodemon to devDependencies, added dev script
+- **Readme.md**: Updated with production and development build/run instructions
 
-## Compatibility Checklist
+## Testing Completed
 
-- [ ] Build the Docker image locally: `docker build -t node/node-web-app:pr-test .`
-- [ ] Run the container and verify the app responds on port 80: `docker run --rm -p 80:80 node/node-web-app:pr-test`
-- [ ] Run `npm install` locally to confirm no dependency issues
-- [ ] Review package.json scripts to ensure proper start/dev scripts exist
-- [ ] If native modules are present, verify multi-stage build allows compilation
-
-## Testing Performed
-
-✅ Docker image builds successfully
-✅ Container runs and app responds on port 80
-✅ Verified nodemon is NOT in production image (only express dependency)
-✅ Runtime image uses `node server.js` command
+✅ Docker image builds successfully with Node 25
+✅ Container starts and app responds correctly on port 80
+✅ Verified nodemon excluded from production image (only express dependency present)
+✅ Runtime uses `node server.js` (not nodemon)
 ✅ package.json has proper `start` and `dev` scripts
 
-## Notes
+## Implementation Notes
 
-- The `--strict-ssl=false` flag was added to npm commands to handle certificate chain issues in the build environment. In production, this should be reviewed and removed if possible.
-- No package-lock.json is currently present in the repository. Consider running `npm install` to generate one for more deterministic builds.
-- For development with hot-reload (nodemon), use the development Dockerfile approach described in the updated Readme.md.
+**Multi-stage Build**: The Dockerfile now uses a build stage for installing all dependencies and a runtime stage that only includes production dependencies and application files.
 
-## Review Request
+**SSL Certificate Handling**: Added `--strict-ssl=false` to npm commands to handle certificate chain issues in the build environment. This should be reviewed for production use.
 
-@copilot - Please review these changes for the Node 25 upgrade.
+**Missing package-lock.json**: No package-lock.json is present in the repository. Consider running `npm install` locally and committing the lockfile for deterministic builds.
+
+**Development Workflow**: For local development with hot-reload, refer to the updated Readme.md for instructions on using nodemon via the dev script or a development Dockerfile.
+
+## Review Requested
+
+cc @copilot
