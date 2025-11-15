@@ -1,20 +1,24 @@
 const express = require('express');
-const routes = express.Router();
+const router = express.Router();
 
 //Example: http://{host}/
-routes.get('/', (req, res) => {
+router.get('/', (req, res) => {
 	res.send('Main folder');
 });
 
 //Path with no param
 //Example: http://{host}/path1
-routes.get('/path1', (req, res) => {
+router.get('/path1', (req, res) => {
   res.send('path1');
+});
+
+router.get('/path5', (req, res) => {
+  res.send('path5');
 });
 
 //Path with param: userName
 //Example: http://{host}/path2/John
-routes.get('/path2/:userName', (req, res, next) => {
+router.get('/path2/:userName', (req, res, next) => {
 	console.log(req.params);
 	next();
 }, (req, res) => {
@@ -23,6 +27,7 @@ routes.get('/path2/:userName', (req, res, next) => {
 
 //Static files in public directory:
 //Example: http://{host}/images/cat.jpeg
-routes.use(express.static('public'));
+router.use(express.static('public'));
 
-module.exports = routes;
+// Export the configured router so server.js can mount it with app.use('/', routes)
+module.exports = router;
